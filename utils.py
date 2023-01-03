@@ -1,22 +1,33 @@
 import json
+import random
 import requests
 
 from classes import BasicWord
 
-def load_random_word():
+
+def load_random_word() -> BasicWord:
     """Loads word list from url (json format), select random word,
     create BasicWord instance, return it"""
     url = 'https://www.jsonkeeper.com/b/51AN'
 
+    global words
+
     responce = requests.get(url)
-    print(f'responce.status_code = {responce.status_code}')
+
     if responce.status_code == 200:
         words = responce.json()
 
-    print(words[0])
-    print(words[1])
-    print(words[2])
+    word = words[random.randint(0, len(words) - 1)]
+
+    subj = BasicWord(word.get('word'), word.get('subwords'))
+
+    return subj
 
 
 if __name__ == '__main__':
+    words = []
+
     load_random_word()
+
+    assert words[0].get('word') == 'питон'
+    assert words[0].get('subwords')[1] == 'тон'
